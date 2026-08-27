@@ -1,0 +1,8 @@
+# Runtime lead backup written by contact.php — never commit
+leads.jsonl
+# OS / editor cruft
+.DS_Store
+*.log
+
+# Deployment zips
+*.zip

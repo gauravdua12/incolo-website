@@ -1,0 +1,110 @@
+/* ==========================================================================
+   Incolo Systems — design tokens
+   Light, airy, blue-toned. One theme (no dark mode by request).
+   ========================================================================== */
+
+:root {
+  color-scheme: light;
+
+  /* ---- Colour: lighter, airier blues ---- */
+  --bg: #f7fafd;
+  --bg-2: #eef4fb;
+  --surface: #ffffff;
+  --surface-tint: #f2f7fd;
+  --surface-ink: #0d2c52;      /* deep slate-navy panel */
+  --surface-ink-2: #103464;
+
+  --border: #e2ecf6;
+  --border-strong: #cfdeee;
+
+  --text: #14324f;             /* softened navy, not pure #0B2340 */
+  --text-strong: #0b2340;
+  --text-muted: #4f647c;
+  --text-faint: #8098b0;
+  --text-on-ink: #eef4fc;
+  --text-on-ink-muted: #a9c2de;
+
+  --accent: #1d65cc;
+  --accent-hover: #185aba;
+  --accent-press: #14498f;
+  --accent-bright: #3b82f6;
+  --accent-soft: #dcebfc;
+  --accent-softer: #edf4fe;
+  --accent-ink: #ffffff;
+
+  --data: #0e9384;             /* sparing — outcomes, ticks */
+  --data-soft: #e2f4f1;
+
+  --focus-ring: #1d65cc;
+  --danger: #c02b2b;
+
+  /* ---- Washes / effects ---- */
+  --wash-hero:
+    radial-gradient(48% 60% at 82% 8%, #d7e9ff 0%, rgba(215, 233, 255, 0) 62%),
+    radial-gradient(40% 50% at 8% 42%, #e4f1ff 0%, rgba(228, 241, 255, 0) 58%),
+    linear-gradient(180deg, #f1f7ff 0%, var(--bg) 60%);
+  --wash-band: linear-gradient(180deg, #f1f7ff 0%, var(--surface-tint) 100%);
+
+  --shadow-sm: 0 1px 2px rgba(13, 44, 82, 0.05);
+  --shadow-md: 0 8px 26px rgba(13, 44, 82, 0.07);
+  --shadow-lift: 0 18px 48px rgba(19, 63, 128, 0.13);
+  --shadow-card: 0 2px 4px rgba(13, 44, 82, 0.04), 0 12px 32px rgba(13, 44, 82, 0.06);
+
+  /* ---- Typography ---- */
+  --font-display: 'Space Grotesk var', 'Space Grotesk', 'Segoe UI', system-ui, sans-serif;
+  --font-body: 'Inter var', 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', 'Menlo', monospace;
+
+  --fs-100: 0.8125rem; /* 13 */
+  --fs-200: 0.875rem;  /* 14 */
+  --fs-300: 1rem;      /* 16 */
+  --fs-400: 1.125rem;  /* 18 */
+  --fs-500: 1.375rem;  /* 22 */
+  --fs-600: 1.75rem;   /* 28 */
+  --fs-700: 2.375rem;  /* 38 */
+  --fs-800: 3.25rem;   /* 52 */
+  --fs-900: 4.25rem;   /* 68 */
+
+  --lh-tight: 1.05;
+  --lh-snug: 1.22;
+  --lh-body: 1.62;
+
+  /* ---- Space (airier scale) ---- */
+  --sp-1: 0.25rem;
+  --sp-2: 0.5rem;
+  --sp-3: 0.75rem;
+  --sp-4: 1rem;
+  --sp-5: 1.5rem;
+  --sp-6: 2rem;
+  --sp-7: 3rem;
+  --sp-8: 4.5rem;
+  --sp-9: 6.5rem;
+  --sp-10: 9rem;
+
+  /* ---- Radius ---- */
+  --r-sm: 10px;
+  --r-md: 16px;
+  --r-lg: 24px;
+  --r-xl: 32px;
+  --r-pill: 999px;
+
+  /* ---- Layout ---- */
+  --container: 1180px;
+  --container-narrow: 780px;
+  --header-h: 72px;
+
+  /* ---- Motion ---- */
+  --ease: cubic-bezier(0.22, 0.61, 0.24, 1);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --dur: 0.4s;
+  --dur-fast: 0.2s;
+}
+
+@media (max-width: 720px) {
+  :root {
+    --fs-700: 2rem;
+    --fs-800: 2.5rem;
+    --fs-900: 2.9rem;
+    --header-h: 62px;
+  }
+}

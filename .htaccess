@@ -1,0 +1,7 @@
+# Block web access to the lead backup and any dotfiles
+<FilesMatch "\.(jsonl)$">
+  Require all denied
+</FilesMatch>
+<FilesMatch "^\.">
+  Require all denied
+</FilesMatch>
