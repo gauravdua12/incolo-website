@@ -272,10 +272,7 @@ h1, h2, h3, h4 {
   z-index: 1;
   width: 100%;
   max-width: 420px;
-  border-radius: var(--r-xl);
-  border: 1px solid var(--border);
-  box-shadow: var(--shadow-lift);
-  background: #fff;
+  background: transparent;
   animation: hero-float 6s ease-in-out infinite;
 }
 .hero-glow {
