@@ -75,7 +75,7 @@
 
       fetch(form.action, {
         method: 'POST',
-        body: new FormData(form),
+        body: new URLSearchParams(new FormData(form)),
         headers: { 'X-Requested-With': 'fetch', 'Accept': 'application/json' }
       })
         .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, d: d }; }); })
