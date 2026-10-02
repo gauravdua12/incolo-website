@@ -24,9 +24,9 @@ const app = express();
 const PORT = parseInt(process.env.PORT || '3000', 10);
 const HOST = process.env.HOST || '127.0.0.1'; // bind to localhost; nginx is the public face
 
-const TO = process.env.CONTACT_TO || 'gaurav.dua@incolosystems.com';
+const TO = process.env.CONTACT_TO || 'business@incolosystems.com';
 const FROM = process.env.CONTACT_FROM || 'noreply@incolosystems.com';
-const SUBJECT = process.env.CONTACT_SUBJECT || 'New enquiry — incolosystems.com';
+const SUBJECT = process.env.CONTACT_SUBJECT || 'New enquiry — incolo.si';
 const BACKUP = process.env.LEADS_FILE || path.join(__dirname, 'leads.jsonl');
 
 // SMTP (authenticated send). Fill these in .env.

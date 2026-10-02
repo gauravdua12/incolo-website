@@ -131,7 +131,7 @@ nano .env        # or: vi .env
 Fill in the SMTP block with your mailbox details, e.g. for GoDaddy:
 
 ```
-CONTACT_TO=gaurav.dua@incolosystems.com
+CONTACT_TO=business@incolosystems.com
 CONTACT_FROM=noreply@incolosystems.com
 SMTP_HOST=smtpout.secureserver.net
 SMTP_PORT=465
@@ -288,6 +288,102 @@ sudo certbot renew --dry-run                   # should say "success"
 - `http://incolosystems.com` should auto-redirect to `https://`. ✅
 - Submit the contact form → the "Thank you" message appears, the email arrives
   at `CONTACT_TO`, and a line is appended to `leads.jsonl` on the server.
+
+---
+
+## 13. Migrating to incolo.si (new primary domain)
+
+`incolo.si` (bought from **Hostinger**) is the new primary address; `incolosystems.com`
+(**GoDaddy**) stays live until `incolo.si` is verified, then redirects to it. The site code
+already uses `https://incolo.si/` as its canonical/SEO URL — only DNS + nginx + the TLS
+cert change on the server. **No code redeploy is needed between the two phases below.**
+
+### Phase 1 — serve both domains (test incolo.si, keep .com working)
+
+1. **Point incolo.si DNS at the same VM** (Hostinger → *Domains → incolo.si → DNS / Name
+   Servers*; keep Hostinger's default nameservers and edit the DNS zone there):
+   - `A` record, host `@`  → **VM public IP** (same IP the .com uses)
+   - `A` record, host `www` → **VM public IP**
+   Leave GoDaddy's `incolosystems.com` records untouched. Confirm propagation:
+   ```bash
+   dig +short incolo.si
+   dig +short www.incolo.si
+   ```
+   Both must return the VM IP before continuing (Certbot verifies by connecting back).
+
+2. **Add incolo.si to the nginx server block** — edit `server_name` in
+   `/etc/nginx/conf.d/incolo.conf` so all four names are served:
+   ```nginx
+   server_name incolosystems.com www.incolosystems.com incolo.si www.incolo.si;
+   ```
+   ```bash
+   sudo nginx -t && sudo systemctl reload nginx
+   ```
+
+3. **Extend the TLS certificate to cover incolo.si** (one combined cert):
+   ```bash
+   sudo certbot --nginx \
+     -d incolosystems.com -d www.incolosystems.com \
+     -d incolo.si -d www.incolo.si
+   ```
+   Choose **Redirect (2)** again. Now `https://incolo.si` serves the site with a valid
+   padlock, and `https://incolosystems.com` keeps working — both live.
+
+4. **Test incolo.si end to end:** padlock OK, pages load, contact form delivers email +
+   appends to `leads.jsonl`. (If you added SPF/DKIM, note mail still sends via the
+   existing `@incolosystems.com` SMTP — unchanged.)
+
+### Phase 2 — cut over: redirect incolosystems.com → incolo.si
+
+Once incolo.si is verified, make `incolosystems.com` 301-redirect to `incolo.si`. Keep the
+combined cert (it still covers .com, so the HTTPS redirect is valid). Replace the contents
+of `/etc/nginx/conf.d/incolo.conf` so the .com names redirect and only incolo.si serves
+the app (Certbot-managed `ssl_certificate` lines from Phase 1 are preserved — keep them):
+
+```nginx
+# Redirect the old domain (both http + https) to the new one
+server {
+    listen 80;  listen [::]:80;
+    listen 443 ssl; listen [::]:443 ssl;
+    server_name incolosystems.com www.incolosystems.com;
+    # ssl_certificate / ssl_certificate_key: keep the Certbot lines already here
+    return 301 https://incolo.si$request_uri;
+}
+
+# Normalise www.incolo.si → apex, and serve the app on apex
+server {
+    listen 443 ssl; listen [::]:443 ssl;
+    server_name www.incolo.si;
+    # same Certbot ssl_certificate lines
+    return 301 https://incolo.si$request_uri;
+}
+server {
+    listen 80;  listen [::]:80;
+    listen 443 ssl; listen [::]:443 ssl;
+    server_name incolo.si;
+    # same Certbot ssl_certificate lines
+
+    location / {
+        proxy_pass http://127.0.0.1:3000;
+        proxy_http_version 1.1;
+        proxy_set_header Host              $host;
+        proxy_set_header X-Real-IP         $remote_addr;
+        proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
+```
+```bash
+sudo nginx -t && sudo systemctl reload nginx
+```
+
+Verify: `https://incolosystems.com` and `www.incolo.si` both 301 to `https://incolo.si`.
+Keep renewing the .com cert (don't cancel it) so the redirect's HTTPS stays valid, and
+keep the GoDaddy domain registered/pointed at the VM for the redirect to work.
+
+> **Email is unchanged:** mailboxes stay on `@incolosystems.com`; only the public contact
+> address shown on the site changed to `business@incolosystems.com`. Set
+> `CONTACT_TO=business@incolosystems.com` in the server's `.env` so enquiries route there.
 
 ---
 

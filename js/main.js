@@ -95,7 +95,7 @@
         })
         .catch(function () {
           if (status) {
-            status.textContent = 'Could not send right now — please email gaurav.dua@incolosystems.com.';
+            status.textContent = 'Could not send right now — please email business@incolosystems.com.';
             status.className = 'form-status is-err';
           }
         })
