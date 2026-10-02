@@ -168,8 +168,12 @@ app.use(
     dotfiles: 'deny',
     extensions: ['html'],
     setHeaders: function (res, filePath) {
-      if (/\.(woff2|css|js|png|jpg|jpeg|webp|svg|ico)$/i.test(filePath)) {
-        res.setHeader('Cache-Control', 'public, max-age=2592000'); // 30 days for static assets
+      if (/\.(woff2|png|jpg|jpeg|webp|svg|ico)$/i.test(filePath)) {
+        res.setHeader('Cache-Control', 'public, max-age=2592000'); // 30 days for fonts/images
+      } else if (/\.(css|js)$/i.test(filePath)) {
+        // Revalidate scripts/styles every load (cheap 304 via ETag) so fixes
+        // reach returning visitors immediately instead of after a long cache.
+        res.setHeader('Cache-Control', 'no-cache');
       }
     },
   })
